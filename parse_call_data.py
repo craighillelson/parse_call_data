@@ -28,10 +28,12 @@ with open("dates_durations.csv") as csv_file:
         time_duration = (time, duration_decimal)
         date_times_durations.setdefault(date, []).append(time_duration)
 
+date_number_of_calls = {}
 durations = []
 assembled_stats = []
 for date, details in date_times_durations.items():
     number_of_calls = len(details)
+    date_number_of_calls[date] = number_of_calls
     for duration in details:
         durations.append(duration[1])
     average_duration = round(statistics.mean(durations), 2)
@@ -48,5 +50,22 @@ for date, details in date_times_durations.items():
         date_times.setdefault(date, []).append(time[0])
 
 print("\ndate, times")
-for date,times in date_times.items():
+for date, times in date_times.items():
     print(date, *times, sep=", ")
+
+print("\ndate, number of calls")
+days = (
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday"
+)
+for date, number_of_calls in sorted(date_number_of_calls.items(), \
+                                    key=lambda x: x[1], reverse=True):
+    day = days[date.weekday()]
+    print(day, date, number_of_calls)
+
+print("\n")

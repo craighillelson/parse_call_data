@@ -40,6 +40,8 @@ for date, details in date_times_durations.items():
     date_calls_duration = (date, number_of_calls, average_duration)
     assembled_stats.append(date_calls_duration)
 
+assembled_stats.reverse()
+
 print("\ndate, number of calls, average duration")
 for date_calls_average_duration in assembled_stats:
     print(*date_calls_average_duration, sep=", ")
@@ -52,8 +54,21 @@ for date, details in date_times_durations.items():
 print("\ndate, times")
 for date, times in date_times.items():
     print(date, *times, sep=", ")
+    print("\n")
 
-print("\ndate, number of calls")
+with open("results.csv", 'w') as out_file:
+    out_csv = csv.writer(out_file)
+    out_csv.writerow(["date","times"])
+    for date, times in date_times.items():
+        out_csv.writerow([date.strftime("%Y-%m-%d")])
+        for num, time in enumerate(times, 1):
+            num_time = f"{num}. {time}"
+            out_csv.writerow([num_time])
+        out_csv.writerow('')
+
+print(f'\n"results.csv" exported successfully')
+
+print("\nday, date, number of calls")
 days = (
     "Monday",
     "Tuesday",
@@ -63,9 +78,15 @@ days = (
     "Saturday",
     "Sunday"
 )
+day_number_of_calls = {}
 for date, number_of_calls in sorted(date_number_of_calls.items(), \
                                     key=lambda x: x[1], reverse=True):
     day = days[date.weekday()]
-    print(day, date, number_of_calls)
+    print(f"{day}, {date}, {number_of_calls}")
+    day_number_of_calls.setdefault(day, []).append(number_of_calls)
+
+print("\nday, number of calls")
+for day, number_of_calls in day_number_of_calls.items():
+    print(f"{day}, {sum(number_of_calls)}")
 
 print("\n")
